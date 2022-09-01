@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongoclient
+  labels:
+    app: mongoclient
+spec:
+  ports:
+    - port: 27017
+  selector:
+    app: mongoclient
+    tier: frontend
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongoclient
+  labels:
+    app: mongoclient
+spec:
+  selector:
+    matchLabels:
+      app: mongoclient
+      tier: frontend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mongoclient
+        tier: frontend
+    spec:
+      containers:
+      - image: mongo:latest
+        name: mongo
+        env:
+        ports:
+        - containerPort: 27017
+          name: mongo
+
